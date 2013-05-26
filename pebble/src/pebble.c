@@ -8,27 +8,26 @@ PBL_APP_INFO(MY_UUID,
              "Sailor Watch", "Sasha Ognev",
              1, 0, /* App version */
              DEFAULT_MENU_ICON,
-             APP_INFO_WATCH_FACE);
+             APP_INFO_STANDARD_APP);
 
 Window window;
 
 AppSync sync;
-uint8_t sync_buffer[32];
+uint8_t sync_buffer[64];
 
 TextLayer timeLayer; // The clock
 TextLayer dateLayer;
 TextLayer speedLayer;
-TextLayer windLayer;
+TextLayer weatherLayer;
 
 enum {
   SPEED_KEY = 0x0,
   WIND_SPEED_KEY = 0x1,
-  GUST_SPEED_KEY = 0x2,
-  WIND_DIRECTION_KEY = 0x3
 };
 
-char* buffers[] = {"Speed: 000.00 kts", "Wind 000.00 kts", "Gust 000.00 kts", "From 000%"};
-static char knots[] = "kts";
+char* buffers[] = {"Speed: 00.0 kts", "Wind -- (--) @ ---°"};
+TextLayer* layers[] = {&speedLayer, &weatherLayer};
+
 
 // Called once per minute
 void handle_minute_tick(AppContextRef ctx, PebbleTickEvent *t) {
@@ -37,74 +36,33 @@ void handle_minute_tick(AppContextRef ctx, PebbleTickEvent *t) {
   (void)ctx;
 
   static char timeText[] = "00:00"; // Needs to be static because it's used by the system later.
+  static char dateText[] = "May 14";
 
   PblTm currentTime;
 
   get_time(&currentTime);
   string_format_time(timeText, sizeof(timeText), "%R", &currentTime);
   text_layer_set_text(&timeLayer, timeText);
-}
 
-static char* itoa2(char* buffer, int num)
-{
-    int temp = num;
-    int len = 0;
-    while(temp >= 1)
-    {
-        temp /= 10;
-        ++len;
-    }
-    if (len == 0)
-    {
-        len = 1;
-    }
-    for (int i = 0; i < len; ++i)
-    {
-        buffer[(len-1)-i] = '0' + (num % 10);
-        num /= 10;
-    }
-    return buffer + len;
-}
-
-static char* splice_num(char* buffer, double num, int precision)
-{
-    buffer = itoa2(buffer, (int)num);
-    if (precision > 0)
-    {
-        *buffer = '.';
-        ++buffer;
-    }
-    double fractional = (num - (int)(num));
-    for (int i = 0; i < precision; ++i)
-    {
-        fractional *= 10;
-    }
-    return itoa2(buffer, (int)fractional);
+  string_format_time(dateText, sizeof(dateText), "%b %d", &currentTime);
+  text_layer_set_text(&dateLayer, dateText);
 }
 
 static void sync_error_callback(DictionaryResult dict_error, AppMessageResult app_message_error, void *context) {
   (void) dict_error;
   (void) app_message_error;
   (void) context;
-  // TODO: HANDLE ERRORS
+  text_layer_set_text(&weatherLayer, "Communication error");
 }
 
 static void sync_tuple_changed_callback(const uint32_t key, const Tuple* new_tuple, const Tuple* old_tuple, void* context) {
   (void) old_tuple;
-  double speed;
-  char* pch;
 
   switch (key) {
   case SPEED_KEY:
-    speed = (double)new_tuple->value->uint32 / 100.0;
-    pch = splice_num(buffers[key] + 7, speed, 1);
-    *pch = ' ';
-    strcpy(pch+1, knots);
-    text_layer_set_text(&speedLayer, buffers[key]);
-    break;
   case WIND_SPEED_KEY:
-  case GUST_SPEED_KEY:
-  case WIND_DIRECTION_KEY:
+    strncpy(buffers[key], new_tuple->value->cstring, 32); // TODO: Buffer size without using sizeof(buffer[key]) that doesn't work in this case
+    text_layer_set_text(layers[key], buffers[key]);
     break;
   default:
     return;
@@ -115,25 +73,32 @@ void handle_init(AppContextRef ctx) {
   (void)ctx;
 
   window_init(&window, "Ahoy");
+  window_set_fullscreen(&window, true);
   window_stack_push(&window, true /* Animated */);
 
   window_set_background_color(&window, GColorBlack);
 
-  text_layer_init(&timeLayer, GRect(40, 44, 144-40 /* width */, 168-44 /* height */));
+  text_layer_init(&timeLayer, GRect(0, 20, 144 /* width */, 168-30 /* height */));
   text_layer_set_text_color(&timeLayer, GColorWhite);
   text_layer_set_background_color(&timeLayer, GColorClear);
-  text_layer_set_font(&timeLayer, fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD));
+  text_layer_set_font(&timeLayer, fonts_get_system_font(FONT_KEY_GOTHAM_34_MEDIUM_NUMBERS));
+  text_layer_set_text_alignment(&timeLayer, GTextAlignmentCenter);
 
-  text_layer_init(&speedLayer, GRect(40, 70, 144-40 /* width */, 168-70 /* height */));
+  text_layer_init(&speedLayer, GRect(0, 60, 144 /* width */, 168-70 /* height */));
   text_layer_set_text_color(&speedLayer, GColorWhite);
   text_layer_set_background_color(&speedLayer, GColorClear);
   text_layer_set_font(&speedLayer, fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD));
 
+  text_layer_init(&weatherLayer, GRect(0, 94, 144 /* width */, 168-100 /* height */));
+  text_layer_set_text_color(&weatherLayer, GColorWhite);
+  text_layer_set_background_color(&weatherLayer, GColorClear);
+  text_layer_set_font(&weatherLayer, fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD));
 
-  text_layer_init(&dateLayer, GRect(40, 130, 144-40 /* width */, 168-130 /* height */));
+  text_layer_init(&dateLayer, GRect(0, 130, 144 /* width */, 168-130 /* height */));
   text_layer_set_text_color(&dateLayer, GColorWhite);
   text_layer_set_background_color(&dateLayer, GColorClear);
   text_layer_set_font(&dateLayer, fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD));
+  text_layer_set_text_alignment(&dateLayer, GTextAlignmentCenter);
 
 
   // Ensures time is displayed immediately (will break if NULL tick event accessed).
@@ -143,12 +108,11 @@ void handle_init(AppContextRef ctx) {
   layer_add_child(&window.layer, &timeLayer.layer);
   layer_add_child(&window.layer, &dateLayer.layer);
   layer_add_child(&window.layer, &speedLayer.layer);
+  layer_add_child(&window.layer, &weatherLayer.layer);
 
   Tuplet initial_values[] = {
-    TupletInteger(SPEED_KEY, (int32_t) 0),
-    TupletInteger(WIND_SPEED_KEY, (int32_t) 0),
-    TupletInteger(GUST_SPEED_KEY, (int32_t) 0),
-    TupletInteger(WIND_DIRECTION_KEY, (int32_t) 0),
+    TupletCString(SPEED_KEY, buffers[SPEED_KEY]),
+    TupletCString(WIND_SPEED_KEY, buffers[WIND_SPEED_KEY]),
   };
   app_sync_init(&sync, sync_buffer, sizeof(sync_buffer), initial_values, ARRAY_LENGTH(initial_values),
                 sync_tuple_changed_callback, sync_error_callback, NULL);
