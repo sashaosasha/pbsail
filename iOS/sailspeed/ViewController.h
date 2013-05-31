@@ -43,6 +43,8 @@ NSString *rest_name;
 
 @property (weak, nonatomic) IBOutlet UIImageView *arrowImage;
 @property (weak, nonatomic) IBOutlet UIImageView *dialImage;
+@property (weak, nonatomic) IBOutlet UISegmentedControl *unitsSwitch;
+- (IBAction)changedUnits:(id)sender;
 @property (weak, nonatomic) IBOutlet UILabel *weatherLabel;
 @end
 

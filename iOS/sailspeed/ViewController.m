@@ -11,7 +11,8 @@
 
 #define kRequiredAccuracy 500.0 //meters
 #define kMaxAge 10.0 //seconds
-#define kMPHtoKnots 0.868976
+#define kMPStoKnots 1.94384
+#define kMPStoMPH 2.23694
 #define kWeatherUpdateSeconds 20
 #define kEMAAlpha 0.16
 
@@ -33,6 +34,15 @@ float degreesToRadians(float a)
     self->speedEma = (1.0 - kEMAAlpha) * self->speedEma + kEMAAlpha * self->speed;
 }
 
+- (void)sendUpdateToWatch {
+    double multiplier = [self.unitsSwitch selectedSegmentIndex] == 0 ? kMPStoKnots : kMPStoMPH;
+    [pebble sendUpdate:[NSNumber numberWithDouble:self->speedEma * multiplier]
+             windSpeed:[NSNumber numberWithDouble:weatherSource.windSpeed * multiplier]
+              windGust:[NSNumber numberWithDouble:weatherSource.windGust * multiplier]
+               windDir:[NSNumber numberWithInt32:weatherSource.windAngle]
+                 units:[self.unitsSwitch selectedSegmentIndex] == 0 ? @"kts" : @"mph" ];
+}
+
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
     
     NSTimeInterval ageInSeconds = [newLocation.timestamp timeIntervalSinceNow];
@@ -44,11 +54,11 @@ float degreesToRadians(float a)
         self->speed = fmax(0.0, newLocation.speed);
         [self decayEma];
         [_speedLabel setText:[NSString stringWithFormat:@"%.1f mph, %.1f kts",
-                              self->speed,
-                              self->speed * kMPHtoKnots]];
+                              self->speed * kMPStoMPH,
+                              self->speed * kMPStoKnots]];
         [_speedLabel2 setText:[NSString stringWithFormat:@"%.1f mph, %.1f kts",
-                              self->speedEma,
-                              self->speedEma * kMPHtoKnots]];
+                              self->speedEma * kMPStoMPH,
+                              self->speedEma * kMPStoKnots]];
     
     
         float requestAge = fabs([lastWeatherRequest timeIntervalSinceNow]);
@@ -56,8 +66,8 @@ float degreesToRadians(float a)
             // set weather
             [weatherSource weatherUpdate:newLocation];
             NSString* weather = [NSString stringWithFormat:@"Wind %2.0f, Gust: %2.0f @%d",
-                                 weatherSource.windSpeed * kMPHtoKnots,
-                                 weatherSource.windGust * kMPHtoKnots,
+                                 weatherSource.windSpeed * kMPStoKnots,
+                                 weatherSource.windGust * kMPStoKnots,
                                  weatherSource.windAngle];
             [_weatherLabel setText:weather];
             
@@ -79,10 +89,7 @@ float degreesToRadians(float a)
             [self->_compassView setNeedsDisplay];
         }
         
-        [pebble sendUpdate:[NSNumber numberWithDouble:self->speedEma]
-                 windSpeed:[NSNumber numberWithDouble:weatherSource.windSpeed * kMPHtoKnots]
-                  windGust:[NSNumber numberWithDouble:weatherSource.windGust * kMPHtoKnots]
-                   windDir:[NSNumber numberWithInt32:weatherSource.windAngle]];
+        [self sendUpdateToWatch];
     }
 }
 
@@ -148,4 +155,7 @@ float degreesToRadians(float a)
     [self.statusLabel setText:message];
 }
 
+- (IBAction)changedUnits:(id)sender {
+    [self sendUpdateToWatch];
+}
 @end

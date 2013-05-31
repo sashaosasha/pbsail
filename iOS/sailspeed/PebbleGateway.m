@@ -27,6 +27,7 @@
           windSpeed:(NSNumber*)wind
            windGust:(NSNumber*)gust
             windDir:(NSNumber*)dir
+              units:(NSString*)units
 {
     double v = [speed floatValue];
     
@@ -39,7 +40,7 @@
     
     NSNumber *speedKey = @(0);
     NSNumber *windKey = @(1);
-    NSDictionary *update = @{ speedKey:[NSString stringWithFormat:@"Speed %.1f kts", v],
+    NSDictionary *update = @{ speedKey:[NSString stringWithFormat:@"Speed %.1f %@", v, units],
                               windKey:[NSString stringWithFormat:@"Wind %.0f(%.0f) from %d°", [wind floatValue], [gust floatValue], [dir intValue]]};
     [_targetWatch appMessagesPushUpdate:update onSent:^(PBWatch *watch, NSDictionary *update, NSError *error) {
         if(self.delegate != nil) {

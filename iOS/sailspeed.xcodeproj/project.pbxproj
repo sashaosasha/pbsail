@@ -30,10 +30,10 @@
 		D9D25E60174B07EB00FAE7D2 /* ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D9D25E5E174B07EB00FAE7D2 /* ViewController.xib */; };
 		D9D25E67174B081B00FAE7D2 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D9D25E66174B081B00FAE7D2 /* CoreLocation.framework */; };
 		D9D25E69174B083900FAE7D2 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D9D25E68174B083900FAE7D2 /* Accelerate.framework */; };
-		D9D25E6F174B0F3900FAE7D2 /* PebbleKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D9D25E6E174B0F3900FAE7D2 /* PebbleKit.framework */; };
-		D9D25E71174B0F5C00FAE7D2 /* PebbleVendor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D9D25E70174B0F5C00FAE7D2 /* PebbleVendor.framework */; };
 		D9D25E74174B279F00FAE7D2 /* WeatherProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = D9D25E73174B279F00FAE7D2 /* WeatherProvider.m */; };
 		D9D25E77174B34FD00FAE7D2 /* CCompasView.m in Sources */ = {isa = PBXBuildFile; fileRef = D9D25E76174B34FD00FAE7D2 /* CCompasView.m */; };
+		D9EFA071175845B800796767 /* PebbleKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D9EFA070175845B800796767 /* PebbleKit.framework */; };
+		D9EFA073175845CF00796767 /* PebbleVendor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D9EFA072175845CF00796767 /* PebbleVendor.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -66,12 +66,12 @@
 		D9D25E5F174B07EB00FAE7D2 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ViewController.xib; sourceTree = "<group>"; };
 		D9D25E66174B081B00FAE7D2 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		D9D25E68174B083900FAE7D2 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
-		D9D25E6E174B0F3900FAE7D2 /* PebbleKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PebbleKit.framework; path = ../iOS/PebbleKit.framework; sourceTree = "<group>"; };
-		D9D25E70174B0F5C00FAE7D2 /* PebbleVendor.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PebbleVendor.framework; path = ../iOS/PebbleVendor.framework; sourceTree = "<group>"; };
 		D9D25E72174B279F00FAE7D2 /* WeatherProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WeatherProvider.h; sourceTree = "<group>"; };
 		D9D25E73174B279F00FAE7D2 /* WeatherProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WeatherProvider.m; sourceTree = "<group>"; };
 		D9D25E75174B34FD00FAE7D2 /* CCompasView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCompasView.h; sourceTree = "<group>"; };
 		D9D25E76174B34FD00FAE7D2 /* CCompasView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCompasView.m; sourceTree = "<group>"; };
+		D9EFA070175845B800796767 /* PebbleKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PebbleKit.framework; path = ../../iOS/PebbleKit.framework; sourceTree = "<group>"; };
+		D9EFA072175845CF00796767 /* PebbleVendor.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PebbleVendor.framework; path = ../../iOS/PebbleVendor.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,13 +79,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D9EFA073175845CF00796767 /* PebbleVendor.framework in Frameworks */,
+				D9EFA071175845B800796767 /* PebbleKit.framework in Frameworks */,
 				D9A469691750665600DB6991 /* libz.dylib in Frameworks */,
 				D9A469671750664C00DB6991 /* MessageUI.framework in Frameworks */,
 				D9A469651750663800DB6991 /* CoreMotion.framework in Frameworks */,
 				D9A46963174F1BC500DB6991 /* ExternalAccessory.framework in Frameworks */,
 				D9A46961174F1BBF00DB6991 /* CoreBluetooth.framework in Frameworks */,
-				D9D25E71174B0F5C00FAE7D2 /* PebbleVendor.framework in Frameworks */,
-				D9D25E6F174B0F3900FAE7D2 /* PebbleKit.framework in Frameworks */,
 				D9D25E69174B083900FAE7D2 /* Accelerate.framework in Frameworks */,
 				D9D25E67174B081B00FAE7D2 /* CoreLocation.framework in Frameworks */,
 				D9D25E44174B07EB00FAE7D2 /* UIKit.framework in Frameworks */,
@@ -100,6 +100,8 @@
 		D9D25E37174B07EB00FAE7D2 = {
 			isa = PBXGroup;
 			children = (
+				D9EFA072175845CF00796767 /* PebbleVendor.framework */,
+				D9EFA070175845B800796767 /* PebbleKit.framework */,
 				D903318C175126C3002A8A58 /* Default-568h@2x.png */,
 				D903318A175126B8002A8A58 /* Default@2x.png */,
 				D9033188175126AA002A8A58 /* Default.png */,
@@ -127,8 +129,6 @@
 				D9A469641750663800DB6991 /* CoreMotion.framework */,
 				D9A46962174F1BC500DB6991 /* ExternalAccessory.framework */,
 				D9A46960174F1BBE00DB6991 /* CoreBluetooth.framework */,
-				D9D25E70174B0F5C00FAE7D2 /* PebbleVendor.framework */,
-				D9D25E6E174B0F3900FAE7D2 /* PebbleKit.framework */,
 				D9D25E68174B083900FAE7D2 /* Accelerate.framework */,
 				D9D25E66174B081B00FAE7D2 /* CoreLocation.framework */,
 				D9D25E43174B07EB00FAE7D2 /* UIKit.framework */,
@@ -333,6 +333,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../iOS\"",
+					"\"$(SRCROOT)/../../iOS\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "sailspeed/sailspeed-Prefix.pch";
@@ -355,6 +356,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../iOS\"",
+					"\"$(SRCROOT)/../../iOS\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "sailspeed/sailspeed-Prefix.pch";

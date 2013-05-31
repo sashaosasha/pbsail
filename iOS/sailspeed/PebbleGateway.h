@@ -21,7 +21,8 @@
 - (void) sendUpdate:(NSNumber*)speed
           windSpeed:(NSNumber*)wind
            windGust:(NSNumber*)gust
-            windDir:(NSNumber*)dir;
+            windDir:(NSNumber*)dir
+              units:(NSString*)units;
 
 @property (retain) id delegate;
 
